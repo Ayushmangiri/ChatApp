@@ -40,27 +40,36 @@
 </body>
 <script>
     function setConnected(connected){
-    document.getElementById("sendMessage").disabled =!connected;
+    document.getElementById('sendMessage').disabled =!connected;
     }
+
+
     function connect(){
     var socket  = new SockJS('/chat');
     stompClient = Stomp.over(socket);
     stompClient.connect({},function(frame){
     setConnected(true);
-        stompClient.subscribe ('/topic/message',function(message){
+        stompClient.subscribe ('/topic/messages',function(message){
+
         showMessage(JSON.parse(message.body));
         });
     });
     }
+
+
      function showMessage(message){
+
+
      var chat = document.getElementById('chat');
-var messageElement = document.createElement("div");
+     var messageElement = document.createElement('div');
 messageElement.textContent = message.sender + ': ' + message.content;
-     console.log(message.sender +': '+ message.content);
-     messageElement.className="border-bottom mb-1";
+
+
+     messageElement.class="border-bottom mb-1";
      chat.appendChild(messageElement)
      chat.scrollTop = chat.scrollHeight;
   }
+
 
     function sendMessage(){
     var sender = document.getElementById('senderInput').value;
@@ -70,9 +79,11 @@ messageElement.textContent = message.sender + ': ' + message.content;
         sender : sender,
         content: content
     }
+
     stompClient.send("/app/sendMessage",{},JSON.stringify(chatMessage));
-        document.getElementById('senderInput').value = '';
+        document.getElementById('messageInput').value = '';
     }
+
     document.getElementById('sendMessage').onclick = sendMessage;
     window.onload = connect;
 </script>
